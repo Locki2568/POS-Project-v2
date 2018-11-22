@@ -1,9 +1,7 @@
 function prinReceipt(barcodeList){
     var boutghItemList = [];
-    var distinctItemList= filterDistinctItem(barcodeList)
+    var distinctItemList= countItemWithBarcode(barcodeList)
     var receipt = ''
-    receipt += generateHeader()
-    console.log("receipt: "+receipt)
     for (let i=0; i<distinctItemList.length; i++){
         var itemTobeModified = getItemInfo(loadAllItems(), distinctItemList[i].barcode)
         itemTobeModified = calculateTheQuantity(itemTobeModified, distinctItemList[i].count)
@@ -11,10 +9,19 @@ function prinReceipt(barcodeList){
         console.log('Debug here: ' + itemTobeModified.name + ' '+ itemTobeModified.quantity + ' '+ itemTobeModified.subtotal);
         boutghItemList.push(itemTobeModified);
     }
-    receipt += generateBody(boutghItemList)
-    console.log("receipt: "+receipt)
-    receipt += generateTrailer(boutghItemList)
+    
+    receipt = createReceipt(boutghItemList)
+    
     return receipt
+}
+
+function createReceipt(boutghItemList){
+  var receipt = ''
+    receipt += generateHeader()
+    receipt += generateBody(boutghItemList)
+    receipt += generateTrailer(boutghItemList)
+    console.log("receipt: "+receipt)
+  return receipt
 }
 
 function generateHeader(){
@@ -120,7 +127,7 @@ function getItemInfo(allItem, barcode){
     return null;
 }
 
-function filterDistinctItem(barcodeList){
+function countItemWithBarcode(barcodeList){
   var distinctBarcodeList = [];
   var distinctItemList = [];
   for(let i=0; i<barcodeList.length; i++){
